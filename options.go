@@ -1,8 +1,6 @@
 package main
 
-import (
-	"reflect"
-)
+import "reflect"
 
 func getAllOptions(x int, y int) [][]int {
 	piece := board[x][y]
@@ -97,7 +95,7 @@ func getPawnOptions(x int, y int) [][]int {
 				}
 			}
 			if x == 3 {
-				if y < 7{
+				if y < 7 {
 					if board[x][y+1] != nil {
 						if board[x][y+1].color && board[x][y+1].piece == defPawn {
 							out = append(out, []int{x - 1, y + 1})
@@ -105,7 +103,7 @@ func getPawnOptions(x int, y int) [][]int {
 						}
 					}
 				}
-				if x > 0{
+				if x > 0 {
 					if board[x][y-1] != nil {
 						if board[x][y-1].color && board[x][y-1].piece == defPawn {
 							out = append(out, []int{x - 1, y - 1})
@@ -298,7 +296,7 @@ func getAllChecks(team bool) [][]int {
 					chnge = -1
 				}
 				pInfo := getPawnOptions(i, j)
-				if len(pInfo) == 0{
+				if len(pInfo) == 0 {
 					continue
 				}
 				for i, ival := range pInfo[:len(pInfo)-1] {
@@ -336,4 +334,40 @@ func getFakeKing(x int, y int) [][]int {
 	tmp = append(tmp, []int{x - 1, y})
 	tmp = append(tmp, []int{x - 1, y - 1})
 	return tmp
+}
+
+func getAllMoves(team bool) [][4]int {
+	var out [][4]int
+
+	for i := range board {
+		for j := range board[i] {
+			loc := board[i][j]
+			if loc == nil {
+				continue
+			}
+			if loc.color == !team {
+				continue
+			}
+			moves := getAllOptions(i, j)
+			for k := range moves {
+				out = append(out, [4]int{i, j, moves[k][0], moves[k][1]})
+			}
+
+		}
+	}
+	return out
+}
+
+func tryAllMoves(moves [][4]int) [][]int {
+	var tmp *piece
+	var out [][]int
+	for _, ival := range moves {
+		tmp = board[ival[2]][ival[3]]
+		board[ival[2]][ival[3]] = board[ival[0]][ival[1]]
+		if !kingInCheck(board[moves[0][0]][moves[0][1]].color) {
+			out = append(out, []int{ival[2], ival[3]})
+		}
+		board[ival[2]][ival[3]] = tmp
+	}
+	return out
 }
