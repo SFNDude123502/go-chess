@@ -51,3 +51,29 @@ func kingInCheck(team bool) bool {
 	kingLoc := findKing(team)
 	return contains(allChecks, kingLoc)
 }
+
+func htmlBoard() [][]string {
+	var out [][]string
+	var str string
+	for i := range board {
+		out = append(out, make([]string, 8))
+		for j := range board[i] {
+			loc := board[i][j]
+			if loc == nil {
+				out[i][j] = ""
+				continue
+			}
+			str = "/templates/pieces/"
+			if board[i][j].color {
+				str += "w"
+			} else {
+				str += "b"
+			}
+			str += hash1[board[i][j].piece]
+			str += ".png"
+			out[i][j] = str
+		}
+	}
+	return out
+}
+
