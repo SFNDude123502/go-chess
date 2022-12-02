@@ -60,18 +60,8 @@ func getMove(c *gin.Context) {
 			return
 		}
 	}
-
-	tmp := board[coords[0][0]][coords[0][1]]
+	board[coords[1][0]][coords[1][1]] = board[coords[0][0]][coords[0][1]]
 	board[coords[0][0]][coords[0][1]] = nil
-
-	if kingInCheck(turn) {
-		fmt.Println("move into check")
-		board[coords[0][0]][coords[0][1]] = tmp
-		e = "This move will put your king into check!"
-		c.Redirect(200, "/")
-		return
-	}
-	board[coords[1][0]][coords[1][1]] = tmp
 
 	if pass != 0 {
 		board[coords[1][0]+pass][coords[1][1]] = nil
