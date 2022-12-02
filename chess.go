@@ -18,17 +18,16 @@ func newGame() {
 	var coords [][]int
 	var winner string
 	for {
-
 		if kingInCheck(turn) {
 			posMoves := getAllMoves(turn)
 			useMoves := tryAllMoves(posMoves)
-			coords = getCheckedInput(turn, useMoves)
+			//coords = getCheckedInput(turn, useMoves)
 			if len(useMoves) == 0 {
 				break
 			}
 
 		} else {
-			coords = getInput(turn)
+			//coords = handleInput(turn)
 		}
 
 		board[coords[1][0]][coords[1][1]] = board[coords[0][0]][coords[0][1]]

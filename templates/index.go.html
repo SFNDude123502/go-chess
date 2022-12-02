@@ -11,6 +11,7 @@
     </head>
     <body>
         <div class="screen">
+            
             <div class="board">
             
                 <div class="item black"></div>
@@ -98,18 +99,21 @@
                 <div class="item blue"> <img src={{index .board 7 7}}></img></div>
             </div>
             <div class="input" >
-                <form action="" method="get">
+                <form id="input" action="/move">
                     <fieldset>
-                        <label>Enter Your Move Formatted as Such:
-                            <br/>
-                            currentLocationOfPiece desiredLocation, Example:
-                            <br/>
-                            g1 f3
-                        </label>
+                        <label>Current Location:</label>
                         <br />
-                        <input type="text" name="move" required />
+                        <input type="text" name="st" id="st" required />
                         <br />
-                        <input type="submit" value="Sumit Move" />
+                        <br/>
+                        <label>Desired Location</label>
+                        <br />
+                        <input type="text" name="end" id="end" required />
+                        <br />
+                        <input type="submit" value="Submit Move"  />
+                        <p id="err">
+                            {{.err}}
+                        </p>
                     </fieldset>
                 </form>
             </div>
@@ -128,12 +132,13 @@
                         <br />
                         <input type="text" name="message" required />
                         <br />
-                        <input type="submit" value="Sumit Move" />
+                        <input type="submit" value="Send Message" />
                     </fieldset>
                 </form>
             </div>
         </div>
         </div>
+        <!--<script src="/templates/index.js"></script>-->
     </body>
 </html>
 {{end}}

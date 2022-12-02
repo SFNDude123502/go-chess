@@ -17,6 +17,9 @@ ul{
     overflow:hidden; 
     overflow-y:scroll;
 }
+body{
+    /*color-scheme: dark;*/
+}
 .text{
     
 }
