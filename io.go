@@ -65,7 +65,7 @@ func boardNotation(item *piece) string {
 }
 
 func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int, htmlReturned bool) {
-	out = [][]int{{}, {}}
+	out = [][]int{{-1, -1}, {-1, -1}}
 	htmlReturned = false
 	out[0] = hash[st]
 	out[1] = hash[end]
