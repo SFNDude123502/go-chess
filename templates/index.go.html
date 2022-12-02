@@ -99,7 +99,7 @@
                 <div class="item blue"> <img src={{index .board 7 7}}></img></div>
             </div>
             <div class="input" >
-                <form id="input" action="/move">
+                <form id="input" method="post" action="/move">
                     <fieldset>
                         <label>Current Location:</label>
                         <br />
@@ -119,14 +119,16 @@
             </div>
             <div class="messages" >
                 <fieldset>
+                    <header>Messages</header>
                     <ul id="arr">
-                        <li>hello</li>
-                        <li>hi</li>
+                        {{range .messages}}
+                            <li>{{.}}</li>
+                        {{end}}
                     </ul>
                 </fieldset>
             </div>
             <div class="text" >
-                <form action="" method="post">
+                <form action="/message" method="post">
                     <fieldset>
                         <label>Enter a Message</label>
                         <br />
@@ -138,7 +140,6 @@
             </div>
         </div>
         </div>
-        <!--<script src="/templates/index.js"></script>-->
     </body>
 </html>
 {{end}}

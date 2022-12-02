@@ -11,6 +11,10 @@ img{
     margin-top: 5px;
     margin-bottom: 5px; 
 }
+header{
+    border-bottom: 2px;
+    border-color: black;
+}
 ul{
     width: auto;
     height: 200px;

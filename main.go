@@ -20,21 +20,27 @@ func main() {
 	srv.StaticFile("/favicon.ico", "./favicon.ico")
 
 	srv.GET("/", getChess)
-	srv.GET("/move", getMove)
+	srv.POST("/move", postMove)
+	srv.POST("/message", postMessage)
 
-	srv.Run(":80")
+	srv.Run(":8080")
+}
+
+func postMessage(c *gin.Context) {
+	messages = append(messages, c.PostForm("message"))
+	c.Redirect(301, "/")
 }
 
 func getChess(c *gin.Context) {
 	printBoard()
-	c.HTML(200, "board", gin.H{"board": htmlBoard(), "err": e})
+	c.HTML(200, "board", gin.H{"board": htmlBoard(), "err": e, "messages": messages})
 }
 
-func getMove(c *gin.Context) {
+func postMove(c *gin.Context) {
 	fmt.Println("moved")
 	var winner string
 	var htmlReturned bool
-	st, end := c.Query("st"), c.Query("end")
+	st, end := c.PostForm("st"), c.PostForm("end")
 	fmt.Println(st, end)
 	var coords [][]int
 	if kingInCheck(turn) {
