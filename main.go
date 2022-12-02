@@ -1,51 +1,62 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 // TODO: Castling
 
 func init() {
-	board = make([][]*piece, 8)
-	for i := range make([]int, 8) {
-		board[i] = make([]*piece, 8)
-	}
-
-	setSide(true)
-	setSide(false)
+	makeBoard()
 }
 
 func main() {
-	printBoard()
-	var coords [][]int
-	var winner string
-	for {
+	srv := gin.Default()
 
-		if kingInCheck(turn) {
-			posMoves := getAllMoves(turn)
-			useMoves := tryAllMoves(posMoves)
-			coords = getCheckedInput(turn, useMoves)
-			if len(useMoves) == 0 {
-				break
+	srv.LoadHTMLGlob("./templates/index.go.html")
+	srv.Static("/templates", "./templates")
+	srv.StaticFile("/favicon.ico", "./favicon.ico")
+
+	srv.GET("/", getChess)
+
+	srv.Run(":80")
+}
+
+func getChess(c *gin.Context) {
+
+	c.HTML(200, "board", gin.H{"board": htmlBoard()})
+}
+
+func htmlBoard() [][]string {
+	var out [][]string
+	var str string
+	for i := range board {
+		out = append(out, make([]string, 8))
+		for j := range board[i] {
+			loc := board[i][j]
+			if loc == nil {
+				out[i][j] = ""
+				continue
 			}
-
-		} else {
-			coords = getInput(turn)
+			str = "/templates/pieces/"
+			if board[i][j].color {
+				str += "w"
+			} else {
+				str += "b"
+			}
+			str += hash1[board[i][j].piece]
+			str += ".png"
+			out[i][j] = str
 		}
-
-		board[coords[1][0]][coords[1][1]] = board[coords[0][0]][coords[0][1]]
-		board[coords[0][0]][coords[0][1]] = nil
-		if pass != 0 {
-			board[coords[1][0]+pass][coords[1][1]] = nil
-		}
-
-		pass = 0
-		printBoard()
-		turn = !turn
 	}
-	if !turn {
-		winner = "White"
-	} else {
-		winner = "Black"
-	}
-	fmt.Println("Checkmate!", winner, "Wins!")
+	return out
+}
+
+var hash1 map[interface{}]string = map[interface{}]string{
+	pawn{}:   "P",
+	rook{}:   "R",
+	knight{}: "N",
+	bishop{}: "B",
+	king{}:   "K",
+	queen{}:  "Q",
 }
