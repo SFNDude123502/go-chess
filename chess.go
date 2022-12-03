@@ -20,7 +20,7 @@ func newGame() {
 	for {
 		if kingInCheck(turn) {
 			posMoves := getAllMoves(turn)
-			useMoves := tryAllMoves(posMoves)
+			useMoves := tryAllMoves(turn, posMoves)
 			//coords = getCheckedInput(turn, useMoves)
 			if len(useMoves) == 0 {
 				break

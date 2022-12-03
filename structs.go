@@ -11,3 +11,8 @@ type knight struct{}
 type bishop struct{}
 type queen struct{}
 type king struct{}
+
+type webReq struct {
+	Board    [][]string
+	Messages []string
+}

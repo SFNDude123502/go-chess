@@ -336,9 +336,7 @@ func getFakeKing(x int, y int) [][]int {
 	return tmp
 }
 
-func getAllMoves(team bool) [][4]int {
-	var out [][4]int
-
+func getAllMoves(team bool) (out [][4]int) {
 	for i := range board {
 		for j := range board[i] {
 			loc := board[i][j]
@@ -355,11 +353,12 @@ func getAllMoves(team bool) [][4]int {
 
 		}
 	}
-	return out
+	return
 }
 
-func tryAllMoves(moves [][4]int) [][]int {
+func tryAllMoves(team bool, moves [][4]int) [][]int {
 	var tmp *piece
+	var kingLoc = findKing(team)
 	var out [][]int
 	for _, ival := range moves {
 		tmp = board[ival[2]][ival[3]]
@@ -368,6 +367,15 @@ func tryAllMoves(moves [][4]int) [][]int {
 			out = append(out, []int{ival[2], ival[3]})
 		}
 		board[ival[2]][ival[3]] = tmp
+	}
+	for i := 0; i < len(out); i++ {
+		if reflect.DeepEqual(out[i], kingLoc) {
+			if len(out) == 1 {
+				return [][]int{}
+			}
+			out = append(out[:i], out[:i+1]...)
+			i--
+		}
 	}
 	return out
 }

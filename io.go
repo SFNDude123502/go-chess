@@ -67,8 +67,8 @@ func boardNotation(item *piece) string {
 func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int, htmlReturned bool) {
 	out = [][]int{{-1, -1}, {-1, -1}}
 	htmlReturned = false
-	out[0] = hash[st]
-	out[1] = hash[end]
+	out[0] = locHash[st]
+	out[1] = locHash[end]
 	options := getAllOptions(out[0][0], out[0][1])
 	if !contains(options, out[1]) {
 		fmt.Println("ivalid")
@@ -111,8 +111,8 @@ func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves 
 	htmlReturned = false
 
 	fmt.Println("You Are In Check rn, at the end of this round you must not be in check anymore")
-	out[0] = hash[st]
-	out[1] = hash[end]
+	out[0] = locHash[st]
+	out[1] = locHash[end]
 	options := getAllOptions(out[0][0], out[0][1])
 	if !contains(posMoves, out[1]) {
 		fmt.Println("still check")
@@ -153,5 +153,21 @@ func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves 
 		}
 	}
 
+	return
+}
+
+func jsonBoard() (b [][]string) {
+
+	b = make2dArr(8, 8)
+
+	for i := range board {
+		for j := range board[i] {
+			if board[i][j] == nil {
+				b[i][j] = " "
+				continue
+			}
+			b[i][j] = pieceHash[board[i][j].piece]
+		}
+	}
 	return
 }

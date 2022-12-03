@@ -69,7 +69,7 @@ func htmlBoard() [][]string {
 			} else {
 				str += "b"
 			}
-			str += hash1[board[i][j].piece]
+			str += pieceHash[board[i][j].piece]
 			str += ".png"
 			out[i][j] = str
 		}
@@ -77,3 +77,16 @@ func htmlBoard() [][]string {
 	return out
 }
 
+func eh(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func make2dArr(h int, w int) [][]string {
+	var arr [][]string
+	for range make([]int, h) {
+		arr = append(arr, make([]string, w))
+	}
+	return arr
+}

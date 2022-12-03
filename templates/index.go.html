@@ -120,11 +120,8 @@
             <div class="messages" >
                 <fieldset>
                     <header>Messages</header>
-                    <ul id="arr">
-                        {{range .messages}}
-                            <li>{{.}}</li>
-                        {{end}}
-                    </ul>
+                    <hr />
+                    <ul id="arr"></ul>
                 </fieldset>
             </div>
             <div class="text" >
@@ -140,6 +137,35 @@
             </div>
         </div>
         </div>
+        <script>
+            url = 'ws://127.0.0.1:8080/reload';
+            c = new WebSocket(url);
+            msgs = 0
+            
+            send = function(data){
+              c.send(data)
+            }
+      
+            c.onmessage = function(msg){
+                setTimeout(console.log, 5000)
+                if (msgs != 0){
+                    if (localStorage.getItem("board") != msg.data.board || localStorage.getItem("messages") != msg.data.messages){
+                        console.count();  
+                        console.log(msg.data)   
+                        location.reload();
+                    }
+                }
+                localStorage.setItem("board", msg.data.board);
+                localStorage.setItem("messages", msg.data.messages);
+                msgs++;
+            }
+      
+            c.onopen = function(){
+              setInterval( 
+                function(){ send({board: localStorage.getItem("board"), messages: localStorage.getItem("messages")}) }
+              , 1000 );
+            }
+          </script>
     </body>
 </html>
 {{end}}
