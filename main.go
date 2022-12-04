@@ -23,6 +23,7 @@ func main() {
 	srv.POST("/move", postMove)
 	srv.POST("/message", postMessage)
 	srv.GET("/reload", webSocket)
+	go wsDealer()
 
 	srv.Run(":8080")
 }

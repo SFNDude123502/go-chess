@@ -1,13 +1,19 @@
 package main
 
+import "github.com/gorilla/websocket"
+
 var board [][]*piece
 var pass int = 0
 var turn bool = true
 var defPawn = pawn{}
 var defKing = king{}
 var e string
-var messages []string
+var messages []string = []string{}
 var checked bool = false
+var clients = make(map[*websocket.Conn]bool)
+var msgChan = make(chan string)
+var moveChan = make(chan []string)
+var err error
 var locHash map[string]([]int) = map[string]([]int){
 	"a1": {0, 0}, "b1": {0, 1}, "c1": {0, 2}, "d1": {0, 3}, "e1": {0, 4}, "f1": {0, 5}, "g1": {0, 6}, "h1": {0, 7},
 	"a2": {1, 0}, "b2": {1, 1}, "c2": {1, 2}, "d2": {1, 3}, "e2": {1, 4}, "f2": {1, 5}, "g2": {1, 6}, "h2": {1, 7},

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"reflect"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -22,19 +22,23 @@ func wsConv(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed to set websocket upgrade: ", err)
 		return
 	}
-	err = conn.WriteJSON(map[string]interface{}{"board": jsonBoard(), "messages": messages})
-	eh(err)
-	var msg webReq
+	clients[conn] = true
+}
+
+func wsDealer() {
+	var msg string
 	for {
-		err := conn.ReadJSON(&msg)
-		if err != nil {
-			break
-		}
-		if !reflect.DeepEqual(jsonBoard(), msg.Board) || !reflect.DeepEqual(messages, msg.Messages) {
-			fmt.Println(jsonBoard(), messages, msg)
-			conn.WriteJSON(map[string]interface{}{"board": jsonBoard(), "messages": messages})
-		} else {
-			fmt.Println(true)
+		time.Sleep(time.Second)
+		//newMsg := <-msgChan
+		//newMove := <-moveChan
+		for client := range clients {
+			fmt.Println(msg)
+			err = client.WriteJSON(map[string]interface{}{"board": htmlBoard(), "messages": messages})
+			if err != nil {
+				fmt.Println("Websocket error:", err)
+				client.Close()
+				delete(clients, client)
+			}
 		}
 	}
 }
