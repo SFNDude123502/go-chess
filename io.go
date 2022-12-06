@@ -74,7 +74,7 @@ func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int,
 		fmt.Println("ivalid")
 		htmlReturned = true
 		e = "Invalid Move"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	start, goal := board[out[0][0]][out[0][1]], board[out[1][0]][out[1][1]]
@@ -82,14 +82,14 @@ func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int,
 		fmt.Println("st empty")
 		htmlReturned = true
 		e = "Starting Location is Empty"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	if start.color != turn {
 		fmt.Println("move opp")
 		htmlReturned = true
 		e = "You Can't Move an Enemy Piece!"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	if goal != nil {
@@ -97,7 +97,7 @@ func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int,
 			fmt.Println("self")
 			htmlReturned = true
 			e = "You Can't Attack Your Own Pieces!"
-			c.Redirect(301, "/")
+			c.JSON(200, gin.H{"err": e})
 			return
 		}
 	}
@@ -118,14 +118,14 @@ func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves 
 		fmt.Println("still check")
 		htmlReturned = true
 		e = "King Still in Check!"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	if !contains(options, out[1]) {
 		fmt.Println("invalid")
 		htmlReturned = true
 		e = "Invalid Move"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	start, goal := board[out[0][0]][out[0][1]], board[out[1][0]][out[1][1]]
@@ -133,14 +133,14 @@ func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves 
 		fmt.Println("st empty")
 		htmlReturned = true
 		e = "Starting Location is Empty"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	if start.color != turn {
 		fmt.Println("moved enemy")
 		htmlReturned = true
 		e = "You Can't Move an Enemy Piece!"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	if goal != nil {
@@ -148,7 +148,7 @@ func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves 
 			fmt.Println("self")
 			htmlReturned = true
 			e = "You Can't Attack Your Own Pieces!"
-			c.Redirect(301, "/")
+			c.JSON(200, gin.H{"err": e})
 			return
 		}
 	}

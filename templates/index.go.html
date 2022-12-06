@@ -99,16 +99,20 @@
                 <div class="item blue">    </div>
             </div>
             <div class="input" >
-                <form id="input" method="post" action="/move">
+                <form id="input" action="">
                     <fieldset>
-                        <label>Current Location:</label>
-                        <br />
-                        <input type="text" name="st" id="st" required />
+                        <div>
+                            <label>Current Location:</label>
+                            <br />
+                            <input type="text" name="st" id="st" required />
+                        </div>
                         <br />
                         <br/>
-                        <label>Desired Location</label>
-                        <br />
-                        <input type="text" name="end" id="end" required />
+                        <div>
+                            <label>Desired Location</label>
+                            <br />
+                            <input type="text" name="end" id="end" required />
+                        </div>
                         <br />
                         <input type="submit" value="Submit Move"  />
                         <p id="err">
@@ -126,7 +130,7 @@
                 </fieldset>
             </div>
             <div class="text" >
-                <form action="/message" method="post">
+                <form method="post">
                     <fieldset>
                         <label>Enter a Message</label>
                         <br />
@@ -137,11 +141,28 @@
                 </form>
             </div>
         </div>
-        </div>
         <script>
-            url = 'ws://127.0.0.1:8080/reload';
-            c = new WebSocket(url);
-            
+            const url = 'ws://127.0.0.1:8080/reload';
+            const c = new WebSocket(url);
+            const inputForm = document.querySelector('#input');
+            const messageForm = document.querySelector('#text');
+
+            inputFormSubmit = async (e) => {
+                e.preventDefault();
+                const res = await fetch('move', {method: 'post', body: new FormData(inputForm)})
+                document.querySelector('#st').value = ''
+                document.querySelector('#end').value = ''
+                console.log(res.body)
+            }
+            inputForm.addEventListener('submit', inputFormSubmit);
+
+            messageFormSubmit = async (e) => {
+                e.preventDefault();
+                const res = await fetch('message', {method: 'post', body: new FormData(messageForm)})
+                document.querySelector('#message').value = '';
+                console.log(res.body)
+            }
+            messageForm.addEventListener('submit', messageFormSubmit);
             
             send = function(data){
               c.send(data);
@@ -162,7 +183,7 @@
       
             c.onopen = function(){
               setInterval( 
-                function(){ send("ping"/*{board: localStorage.getItem("board"), messages: localStorage.getItem("messages")}*/) }
+                function(){ send("ping") }
               , 1000 );
             }
 
@@ -171,11 +192,16 @@
                 squares = oldBoard.children;
                 let j = 0;
                 for (let i = 0; i < squares.length; i++) {
-                    if (i % 9 == 0 || i < 9) {
+                    if (i % 9 === 0 || i < 9) {
                         continue;
                     }
-
-                    squares[i].innerHTML = '<img src='+board[Math.floor(j/8)][j%8]+'></img>'
+                    loc = board[Math.floor(j/8)][j%8]
+                    if (loc === ""){
+                        squares[i].innerHTML = ''
+                        j++;
+                        continue
+                    }
+                    squares[i].innerHTML = '<img src='+loc+'/ >'
 
                     j++;
                 }

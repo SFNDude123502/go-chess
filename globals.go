@@ -11,8 +11,6 @@ var e string
 var messages []string = []string{}
 var checked bool = false
 var clients = make(map[*websocket.Conn]bool)
-var msgChan = make(chan string)
-var moveChan = make(chan []string)
 var err error
 var locHash map[string]([]int) = map[string]([]int){
 	"a1": {0, 0}, "b1": {0, 1}, "c1": {0, 2}, "d1": {0, 3}, "e1": {0, 4}, "f1": {0, 5}, "g1": {0, 6}, "h1": {0, 7},

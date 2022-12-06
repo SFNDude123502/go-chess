@@ -7,6 +7,8 @@ import (
 )
 
 // TODO: Castling
+// 	     Pawn Promotion
+//       Drag and Drop / Click 2 locations
 
 func init() {
 	makeBoard()
@@ -25,21 +27,25 @@ func main() {
 	srv.GET("/reload", webSocket)
 	go wsDealer()
 
-	srv.Run(":8080")
+	err = srv.Run(":8080")
+	eh(err)
 }
 
 func webSocket(c *gin.Context) {
+	//if len(clients) == 2 {
+	//	return
+	//}
 	wsConv(c.Writer, c.Request)
 }
 
 func postMessage(c *gin.Context) {
 	messages = append(messages, c.PostForm("message"))
-	c.Redirect(301, "/")
+	c.JSON(200, nil)
 }
 
 func getChess(c *gin.Context) {
 	printBoard()
-	c.HTML(200, "board", gin.H{"board": htmlBoard(), "err": e, "messages": messages})
+	c.HTML(200, "board", gin.H{"board": htmlBoard()})
 }
 
 func postMove(c *gin.Context) {
@@ -67,7 +73,7 @@ func postMove(c *gin.Context) {
 			} else {
 				winner = "Black"
 			}
-			c.HTML(200, "victory", gin.H{"winner": winner})
+			c.JSON(200, gin.H{"winner": winner})
 			return
 		}
 	} else {
@@ -84,7 +90,7 @@ func postMove(c *gin.Context) {
 		fmt.Println("move into check")
 		board[coords[0][0]][coords[0][1]] = tmp
 		e = "This move will put your king into check!"
-		c.Redirect(301, "/")
+		c.JSON(200, gin.H{"err": e})
 		return
 	}
 	board[coords[1][0]][coords[1][1]] = tmp
@@ -107,7 +113,7 @@ func postMove(c *gin.Context) {
 			} else {
 				winner = "Black"
 			}
-			c.HTML(200, "victory", gin.H{"winner": winner})
+			c.JSON(200, gin.H{"winner": winner})
 			return
 		}
 		fmt.Println(useMoves)
@@ -117,6 +123,6 @@ func postMove(c *gin.Context) {
 	fmt.Println("success")
 
 	pass = 0
-	c.Redirect(301, "/")
+	c.JSON(200, nil)
 	turn = !turn
 }

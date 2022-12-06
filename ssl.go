@@ -26,17 +26,15 @@ func wsConv(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsDealer() {
-	var msg string
 	for {
 		time.Sleep(time.Second)
-		//newMsg := <-msgChan
-		//newMove := <-moveChan
 		for client := range clients {
-			fmt.Println(msg)
+			fmt.Println(time.Now())
 			err = client.WriteJSON(map[string]interface{}{"board": htmlBoard(), "messages": messages})
 			if err != nil {
 				fmt.Println("Websocket error:", err)
-				client.Close()
+				err = client.Close()
+				eh(err)
 				delete(clients, client)
 			}
 		}
