@@ -2,30 +2,29 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
-func printBoard() {
+func PrintBoard() {
 	fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
 	fmt.Println("|   || a | b | c | d | e | f | g | h |")
 	pL()
 	pL()
-	fmt.Println("| 1 " + getLine(board[0]))
+	fmt.Println("| 1 " + getLine(Board[0]))
 	pL()
-	fmt.Println("| 2 " + getLine(board[1]))
+	fmt.Println("| 2 " + getLine(Board[1]))
 	pL()
-	fmt.Println("| 3 " + getLine(board[2]))
+	fmt.Println("| 3 " + getLine(Board[2]))
 	pL()
-	fmt.Println("| 4 " + getLine(board[3]))
+	fmt.Println("| 4 " + getLine(Board[3]))
 	pL()
-	fmt.Println("| 5 " + getLine(board[4]))
+	fmt.Println("| 5 " + getLine(Board[4]))
 	pL()
-	fmt.Println("| 6 " + getLine(board[5]))
+	fmt.Println("| 6 " + getLine(Board[5]))
 	pL()
-	fmt.Println("| 7 " + getLine(board[6]))
+	fmt.Println("| 7 " + getLine(Board[6]))
 	pL()
-	fmt.Println("| 8 " + getLine(board[7]))
+	fmt.Println("| 8 " + getLine(Board[7]))
 	pL()
 	fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 }
@@ -36,138 +35,122 @@ func pL() {
 	}
 	fmt.Println(pr)
 }
-func getLine(line []*piece) string {
+func getLine(line []*Piece) string {
 	ret := "|| "
 	for i := range make([]int, 8) {
 		ret += boardNotation(line[i]) + " | "
 	}
 	return ret
 }
-func boardNotation(item *piece) string {
+func boardNotation(item *Piece) string {
 	if item == nil {
 		return " "
 	}
-	switch item.piece {
-	case pawn{}:
+	switch item.Piece {
+	case Pawn{}:
 		return "p"
-	case rook{}:
+	case Rook{}:
 		return "r"
-	case knight{}:
+	case Knight{}:
 		return "n"
-	case bishop{}:
+	case Bishop{}:
 		return "b"
-	case queen{}:
+	case Queen{}:
 		return "q"
-	case king{}:
+	case King{}:
 		return "k"
 	}
 	panic("none of the above")
 }
 
-func handleInput(c *gin.Context, st string, end string, turn bool) (out [][]int, htmlReturned bool) {
+func HandleInput(c *gin.Context, st string, end string, turn bool) (out [][]int, htmlReturned bool) {
 	out = [][]int{{-1, -1}, {-1, -1}}
 	htmlReturned = false
-	out[0] = locHash[st]
-	out[1] = locHash[end]
+	out[0] = LocHash[st]
+	out[1] = LocHash[end]
 	options := getAllOptions(out[0][0], out[0][1])
-	if !contains(options, out[1]) {
+	if !Contains(options, out[1]) {
 		fmt.Println("ivalid")
 		htmlReturned = true
-		e = "Invalid Move"
-		c.JSON(200, gin.H{"err": e})
+		E = "Invalid Move"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
-	start, goal := board[out[0][0]][out[0][1]], board[out[1][0]][out[1][1]]
+	start, goal := Board[out[0][0]][out[0][1]], Board[out[1][0]][out[1][1]]
 	if start == nil {
 		fmt.Println("st empty")
 		htmlReturned = true
-		e = "Starting Location is Empty"
-		c.JSON(200, gin.H{"err": e})
+		E = "Starting Location is Empty"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
-	if start.color != turn {
+	if start.Color != turn {
 		fmt.Println("move opp")
 		htmlReturned = true
-		e = "You Can't Move an Enemy Piece!"
-		c.JSON(200, gin.H{"err": e})
+		E = "You Can't Move an Enemy Piece!"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
 	if goal != nil {
-		if goal.color == turn {
+		if goal.Color == turn {
 			fmt.Println("self")
 			htmlReturned = true
-			e = "You Can't Attack Your Own Pieces!"
-			c.JSON(200, gin.H{"err": e})
+			E = "You Can't Attack Your Own Pieces!"
+			c.JSON(200, gin.H{"err": E})
 			return
 		}
 	}
-	e = ""
+	E = ""
 
 	return
 }
 
-func getCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves [][]int) (out [][]int, htmlReturned bool) {
+func GetCheckedInput(c *gin.Context, st string, end string, turn bool, posMoves [][]int) (out [][]int, htmlReturned bool) {
 	out = [][]int{{}, {}}
 	htmlReturned = false
 
 	fmt.Println("You Are In Check rn, at the end of this round you must not be in check anymore")
-	out[0] = locHash[st]
-	out[1] = locHash[end]
+	out[0] = LocHash[st]
+	out[1] = LocHash[end]
 	options := getAllOptions(out[0][0], out[0][1])
-	if !contains(posMoves, out[1]) {
+	if !Contains(posMoves, out[1]) {
 		fmt.Println("still check")
 		htmlReturned = true
-		e = "King Still in Check!"
-		c.JSON(200, gin.H{"err": e})
+		E = "King Still in Check!"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
-	if !contains(options, out[1]) {
+	if !Contains(options, out[1]) {
 		fmt.Println("invalid")
 		htmlReturned = true
-		e = "Invalid Move"
-		c.JSON(200, gin.H{"err": e})
+		E = "Invalid Move"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
-	start, goal := board[out[0][0]][out[0][1]], board[out[1][0]][out[1][1]]
+	start, goal := Board[out[0][0]][out[0][1]], Board[out[1][0]][out[1][1]]
 	if start == nil {
 		fmt.Println("st empty")
 		htmlReturned = true
-		e = "Starting Location is Empty"
-		c.JSON(200, gin.H{"err": e})
+		E = "Starting Location is Empty"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
-	if start.color != turn {
+	if start.Color != turn {
 		fmt.Println("moved enemy")
 		htmlReturned = true
-		e = "You Can't Move an Enemy Piece!"
-		c.JSON(200, gin.H{"err": e})
+		E = "You Can't Move an Enemy Piece!"
+		c.JSON(200, gin.H{"err": E})
 		return
 	}
 	if goal != nil {
-		if goal.color == turn {
+		if goal.Color == turn {
 			fmt.Println("self")
 			htmlReturned = true
-			e = "You Can't Attack Your Own Pieces!"
-			c.JSON(200, gin.H{"err": e})
+			E = "You Can't Attack Your Own Pieces!"
+			c.JSON(200, gin.H{"err": E})
 			return
 		}
 	}
 
-	return
-}
-
-func jsonBoard() (b [][]string) {
-
-	b = make2dArr(8, 8)
-
-	for i := range board {
-		for j := range board[i] {
-			if board[i][j] == nil {
-				b[i][j] = " "
-				continue
-			}
-			b[i][j] = pieceHash[board[i][j].piece]
-		}
-	}
 	return
 }

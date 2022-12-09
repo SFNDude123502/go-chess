@@ -130,11 +130,11 @@
                 </fieldset>
             </div>
             <div class="text" >
-                <form method="post">
+                <form id="text" method="post">
                     <fieldset>
                         <label>Enter a Message</label>
                         <br />
-                        <input type="text" name="message" required />
+                        <input type="text" name="message" id="message" required />
                         <br />
                         <input type="submit" value="Send Message" />
                     </fieldset>
@@ -213,6 +213,8 @@
                 while ( arr.firstChild ){   
                     arr.removeChild(arr.firstChild);
                 }
+                if (messages === null){ return; }
+                if (messages === undefined) { return; }
 
                 messages.forEach(e => {
                     addItem(e);

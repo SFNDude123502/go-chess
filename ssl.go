@@ -16,26 +16,26 @@ var upgrader websocket.Upgrader = websocket.Upgrader{
 	},
 }
 
-func wsConv(w http.ResponseWriter, r *http.Request) {
+func WsConv(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Failed to set websocket upgrade: ", err)
 		return
 	}
-	clients[conn] = true
+	Clients[conn] = true
 }
 
-func wsDealer() {
+func WsDealer() {
 	for {
 		time.Sleep(time.Second)
-		for client := range clients {
+		for client := range Clients {
 			fmt.Println(time.Now())
-			err = client.WriteJSON(map[string]interface{}{"board": htmlBoard(), "messages": messages})
-			if err != nil {
-				fmt.Println("Websocket error:", err)
-				err = client.Close()
-				eh(err)
-				delete(clients, client)
+			Err = client.WriteJSON(map[string]interface{}{"board": HtmlBoard(), "messages": Messages})
+			if Err != nil {
+				fmt.Println("Websocket error:", Err)
+				Err = client.Close()
+				Eh(Err)
+				delete(Clients, client)
 			}
 		}
 	}

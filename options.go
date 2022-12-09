@@ -1,113 +1,116 @@
 package main
 
-import "reflect"
+import (
+	"reflect"
+)
 
 func getAllOptions(x int, y int) [][]int {
-	piece := board[x][y]
-	switch piece.piece {
-	case pawn{}:
+	piece := Board[x][y]
+	switch piece.Piece {
+	case Pawn{}:
 		return getPawnOptions(x, y)
-	case rook{}:
+	case Rook{}:
 		return getRookOptions(x, y)
-	case bishop{}:
+	case Bishop{}:
 		return getBishopOptions(x, y)
-	case knight{}:
+	case Knight{}:
 		return getKnightOptions(x, y)
-	case queen{}:
+	case Queen{}:
 		return getQueenOptions(x, y)
-	case king{}:
+	case King{}:
 		return getKingOptions(x, y)
 	}
 
 	return [][]int{}
 }
-func getPawnOptions(x int, y int) [][]int {
-	var out [][]int = [][]int{}
-	var piece *piece = board[x][y]
 
-	if piece.color {
+func getPawnOptions(x int, y int) [][]int {
+	var out [][]int
+	var piece = Board[x][y]
+
+	if piece.Color {
 		if x != 7 {
-			if board[x+1][y] == nil {
+			if Board[x+1][y] == nil {
 				out = append(out, []int{x + 1, y})
 			}
 			if x == 1 {
-				if board[3][y] == nil {
+				if Board[3][y] == nil {
 					out = append(out, []int{3, y})
 				}
 			}
-			if y != 7 {
-				if board[x+1][y+1] != nil {
-					if !board[x+1][y+1].color {
+			if y < 7 {
+				if Board[x+1][y+1] != nil {
+					if !Board[x+1][y+1].Color {
 						out = append(out, []int{x + 1, y + 1})
 					}
 				}
 			}
-			if y != 0 {
-				if board[x+1][y-1] != nil {
-					if !board[x+1][y-1].color {
+			if y > 0 {
+				if Board[x+1][y-1] != nil {
+					if !Board[x+1][y-1].Color {
 						out = append(out, []int{x + 1, y - 1})
 					}
 				}
 			}
 			if x == 4 {
 				if y < 7 {
-					if board[x][y+1] != nil {
-						if !board[x][y+1].color {
-							if board[x][y+1].piece == defPawn {
+					if Board[x][y+1] != nil {
+						if !Board[x][y+1].Color {
+							if Board[x][y+1].Piece == DefPawn {
 								out = append(out, []int{x + 1, y + 1})
-								pass = -1
+								Pass = -1
 							}
 						}
 					}
 				}
 				if y > 0 {
-					if board[x][y-1] != nil {
-						if !board[x][y-1].color && board[x][y-1].piece == defPawn {
+					if Board[x][y-1] != nil {
+						if !Board[x][y-1].Color && Board[x][y-1].Piece == DefPawn {
 							out = append(out, []int{x + 1, y - 1})
-							pass = -1
+							Pass = -1
 						}
 					}
 				}
 			}
 		}
-	} else if !piece.color {
+	} else if !piece.Color {
 		if x != 0 {
-			if board[x-1][y] == nil {
+			if Board[x-1][y] == nil {
 				out = append(out, []int{x - 1, y})
 			}
 			if x == 6 {
-				if board[4][y] == nil {
+				if Board[4][y] == nil {
 					out = append(out, []int{4, y})
 				}
 			}
-			if y != 7 {
-				if board[x-1][y+1] != nil {
-					if board[x-1][y+1].color {
+			if y < 7 {
+				if Board[x-1][y+1] != nil {
+					if Board[x-1][y+1].Color {
 						out = append(out, []int{x - 1, y + 1})
 					}
 				}
 			}
-			if y != 0 {
-				if board[x-1][y-1] != nil {
-					if board[x-1][y-1].color {
+			if y > 0 {
+				if Board[x-1][y-1] != nil {
+					if Board[x-1][y-1].Color {
 						out = append(out, []int{x - 1, y - 1})
 					}
 				}
 			}
 			if x == 3 {
 				if y < 7 {
-					if board[x][y+1] != nil {
-						if board[x][y+1].color && board[x][y+1].piece == defPawn {
+					if Board[x][y+1] != nil {
+						if Board[x][y+1].Color && Board[x][y+1].Piece == DefPawn {
 							out = append(out, []int{x - 1, y + 1})
-							pass = 1
+							Pass = 1
 						}
 					}
 				}
-				if x > 0 {
-					if board[x][y-1] != nil {
-						if board[x][y-1].color && board[x][y-1].piece == defPawn {
+				if y > 0 {
+					if Board[x][y-1] != nil {
+						if Board[x][y-1].Color && Board[x][y-1].Piece == DefPawn {
 							out = append(out, []int{x - 1, y - 1})
-							pass = 1
+							Pass = 1
 						}
 					}
 				}
@@ -116,6 +119,7 @@ func getPawnOptions(x int, y int) [][]int {
 	}
 	return out
 }
+
 func getRookOptions(xx int, yy int) [][]int {
 	var out [][]int
 	var x, y int = xx, yy
@@ -123,7 +127,7 @@ func getRookOptions(xx int, yy int) [][]int {
 		for x > 0 {
 			x--
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -133,7 +137,7 @@ func getRookOptions(xx int, yy int) [][]int {
 		for x < 7 {
 			x++
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -143,7 +147,7 @@ func getRookOptions(xx int, yy int) [][]int {
 		for y > 0 {
 			y--
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -153,13 +157,14 @@ func getRookOptions(xx int, yy int) [][]int {
 		for y < 7 {
 			y++
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
 	}
 	return out
 }
+
 func getBishopOptions(xx int, yy int) [][]int {
 	var out [][]int
 	var x, y int = xx, yy
@@ -168,7 +173,7 @@ func getBishopOptions(xx int, yy int) [][]int {
 			x--
 			y--
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -179,7 +184,7 @@ func getBishopOptions(xx int, yy int) [][]int {
 			x--
 			y++
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -190,7 +195,7 @@ func getBishopOptions(xx int, yy int) [][]int {
 			x++
 			y--
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -201,7 +206,7 @@ func getBishopOptions(xx int, yy int) [][]int {
 			x++
 			y++
 			out = append(out, []int{x, y})
-			if board[x][y] != nil {
+			if Board[x][y] != nil {
 				break
 			}
 		}
@@ -246,7 +251,7 @@ func getKingOptions(x int, y int) [][]int {
 	tmp = append(tmp, []int{x - 1, y})
 	tmp = append(tmp, []int{x - 1, y - 1})
 
-	allTaken = getAllChecks(board[x][y].color)
+	allTaken = GetAllChecks(Board[x][y].Color)
 
 	for i := range tmp {
 		if tmp[i][0] >= 0 && tmp[i][0] <= 7 {
@@ -257,15 +262,15 @@ func getKingOptions(x int, y int) [][]int {
 	}
 
 	for i := range tmp1 {
-		if contains(allTaken, tmp1[i]) {
+		if Contains(allTaken, tmp1[i]) {
 			continue
 		}
-		loc := board[tmp1[i][0]][tmp1[i][1]]
+		loc := Board[tmp1[i][0]][tmp1[i][1]]
 		if loc == nil {
 			out = append(out, tmp1[i])
 			continue
 		}
-		if loc.color == board[x][y].color {
+		if loc.Color == Board[x][y].Color {
 			continue
 		}
 		out = append(out, tmp1[i])
@@ -274,23 +279,23 @@ func getKingOptions(x int, y int) [][]int {
 	return out
 }
 
-func getAllChecks(team bool) [][]int {
+func GetAllChecks(team bool) [][]int {
 	var allTaken [][]int
 	var chnge = 0
-	for i := range board {
-		for j := range board[i] {
-			loc := board[i][j]
+	for i := range Board {
+		for j := range Board[i] {
+			loc := Board[i][j]
 			if loc == nil {
 				continue
 			}
-			if loc.color == team {
+			if loc.Color == team {
 				continue
 			}
 
-			if loc.piece == defKing {
+			if loc.Piece == DefKing {
 				allTaken = append(allTaken, getFakeKing(i, j)...)
-			} else if loc.piece == defPawn {
-				if loc.color {
+			} else if loc.Piece == DefPawn {
+				if loc.Color {
 					chnge = 1
 				} else {
 					chnge = -1
@@ -336,14 +341,14 @@ func getFakeKing(x int, y int) [][]int {
 	return tmp
 }
 
-func getAllMoves(team bool) (out [][4]int) {
-	for i := range board {
-		for j := range board[i] {
-			loc := board[i][j]
+func GetAllMoves(team bool) (out [][4]int) {
+	for i := range Board {
+		for j := range Board[i] {
+			loc := Board[i][j]
 			if loc == nil {
 				continue
 			}
-			if loc.color == !team {
+			if loc.Color == !team {
 				continue
 			}
 			moves := getAllOptions(i, j)
@@ -356,17 +361,17 @@ func getAllMoves(team bool) (out [][4]int) {
 	return
 }
 
-func tryAllMoves(team bool, moves [][4]int) [][]int {
-	var tmp *piece
-	var kingLoc = findKing(team)
+func TryAllMoves(team bool, moves [][4]int) [][]int {
+	var tmp *Piece
+	var kingLoc = FindKing(team)
 	var out [][]int
 	for _, ival := range moves {
-		tmp = board[ival[2]][ival[3]]
-		board[ival[2]][ival[3]] = board[ival[0]][ival[1]]
-		if !kingInCheck(board[moves[0][0]][moves[0][1]].color) {
+		tmp = Board[ival[2]][ival[3]]
+		Board[ival[2]][ival[3]] = Board[ival[0]][ival[1]]
+		if !KingInCheck(Board[moves[0][0]][moves[0][1]].Color) {
 			out = append(out, []int{ival[2], ival[3]})
 		}
-		board[ival[2]][ival[3]] = tmp
+		Board[ival[2]][ival[3]] = tmp
 	}
 	for i := 0; i < len(out); i++ {
 		if reflect.DeepEqual(out[i], kingLoc) {

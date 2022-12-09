@@ -1,26 +1,28 @@
 package main
 
-import "reflect"
+import (
+	"reflect"
+)
 
-func setSide(color bool) {
+func SetSide(color bool) {
 	var end, pLine = 0, 1
 	if !color {
 		end, pLine = 7, 6
 	}
-	board[end][0] = &piece{color: color, piece: rook{}}
-	board[end][7] = &piece{color: color, piece: rook{}}
-	board[end][1] = &piece{color: color, piece: knight{}}
-	board[end][6] = &piece{color: color, piece: knight{}}
-	board[end][2] = &piece{color: color, piece: bishop{}}
-	board[end][5] = &piece{color: color, piece: bishop{}}
-	board[end][3] = &piece{color: color, piece: queen{}}
-	board[end][4] = &piece{color: color, piece: king{}}
+	Board[end][0] = &Piece{Color: color, Piece: Rook{}}
+	Board[end][7] = &Piece{Color: color, Piece: Rook{}}
+	Board[end][1] = &Piece{Color: color, Piece: Knight{}}
+	Board[end][6] = &Piece{Color: color, Piece: Knight{}}
+	Board[end][2] = &Piece{Color: color, Piece: Bishop{}}
+	Board[end][5] = &Piece{Color: color, Piece: Bishop{}}
+	Board[end][3] = &Piece{Color: color, Piece: Queen{}}
+	Board[end][4] = &Piece{Color: color, Piece: King{}}
 	for i := range make([]int, 8) {
-		board[pLine][i] = &piece{color: color, piece: pawn{}}
+		Board[pLine][i] = &Piece{Color: color, Piece: Pawn{}}
 	}
 }
 
-func contains(list [][]int, target []int) bool {
+func Contains(list [][]int, target []int) bool {
 	for _, ival := range list {
 		if reflect.DeepEqual(ival, target) {
 			return true
@@ -29,15 +31,15 @@ func contains(list [][]int, target []int) bool {
 	return false
 }
 
-func findKing(team bool) []int {
-	for i := range board {
-		for j := range board[i] {
-			loc := board[i][j]
+func FindKing(team bool) []int {
+	for i := range Board {
+		for j := range Board[i] {
+			loc := Board[i][j]
 			if loc == nil {
 				continue
 			}
-			if loc.piece == defKing {
-				if loc.color == team {
+			if loc.Piece == DefKing {
+				if loc.Color == team {
 					return []int{i, j}
 				}
 			}
@@ -46,30 +48,30 @@ func findKing(team bool) []int {
 	return []int{-1, -1}
 }
 
-func kingInCheck(team bool) bool {
-	allChecks := getAllChecks(team)
-	kingLoc := findKing(team)
-	return contains(allChecks, kingLoc)
+func KingInCheck(team bool) bool {
+	allChecks := GetAllChecks(team)
+	kingLoc := FindKing(team)
+	return Contains(allChecks, kingLoc)
 }
 
-func htmlBoard() [][]string {
+func HtmlBoard() [][]string {
 	var out [][]string
 	var str string
-	for i := range board {
+	for i := range Board {
 		out = append(out, make([]string, 8))
-		for j := range board[i] {
-			loc := board[i][j]
+		for j := range Board[i] {
+			loc := Board[i][j]
 			if loc == nil {
 				out[i][j] = ""
 				continue
 			}
 			str = "/templates/pieces/"
-			if board[i][j].color {
+			if Board[i][j].Color {
 				str += "w"
 			} else {
 				str += "b"
 			}
-			str += pieceHash[board[i][j].piece]
+			str += PieceHash[Board[i][j].Piece]
 			str += ".png"
 			out[i][j] = str
 		}
@@ -77,13 +79,13 @@ func htmlBoard() [][]string {
 	return out
 }
 
-func eh(err error) {
+func Eh(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-func make2dArr(h int, w int) [][]string {
+func Make2dArr(h int, w int) [][]string {
 	var arr [][]string
 	for range make([]int, h) {
 		arr = append(arr, make([]string, w))

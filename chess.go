@@ -1,26 +1,28 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func makeBoard() {
-	board = make([][]*piece, 8)
+func MakeBoard() {
+	Board = make([][]*Piece, 8)
 	for i := range make([]int, 8) {
-		board[i] = make([]*piece, 8)
+		Board[i] = make([]*Piece, 8)
 	}
 
-	setSide(true)
-	setSide(false)
+	SetSide(true)
+	SetSide(false)
 }
 
 func newGame() {
-	makeBoard()
-	printBoard()
+	MakeBoard()
+	PrintBoard()
 	var coords [][]int
 	var winner string
 	for {
-		if kingInCheck(turn) {
-			posMoves := getAllMoves(turn)
-			useMoves := tryAllMoves(turn, posMoves)
+		if KingInCheck(Turn) {
+			posMoves := GetAllMoves(Turn)
+			useMoves := TryAllMoves(Turn, posMoves)
 			//coords = getCheckedInput(turn, useMoves)
 			if len(useMoves) == 0 {
 				break
@@ -30,20 +32,42 @@ func newGame() {
 			//coords = handleInput(turn)
 		}
 
-		board[coords[1][0]][coords[1][1]] = board[coords[0][0]][coords[0][1]]
-		board[coords[0][0]][coords[0][1]] = nil
-		if pass != 0 {
-			board[coords[1][0]+pass][coords[1][1]] = nil
+		Board[coords[1][0]][coords[1][1]] = Board[coords[0][0]][coords[0][1]]
+		Board[coords[0][0]][coords[0][1]] = nil
+		if Pass != 0 {
+			Board[coords[1][0]+Pass][coords[1][1]] = nil
 		}
 
-		pass = 0
-		printBoard()
-		turn = !turn
+		Pass = 0
+		PrintBoard()
+		Turn = !Turn
 	}
-	if !turn {
+	if !Turn {
 		winner = "White"
 	} else {
 		winner = "Black"
 	}
 	fmt.Println("Checkmate!", winner, "Wins!")
+}
+
+func PromotePawn(loc []int, turn bool) {
+	if Board[loc[0]][loc[1]] == nil {
+		return
+	}
+	if Board[loc[0]][loc[1]].Color != turn {
+		return
+	}
+	if Board[loc[0]][loc[1]].Piece != DefPawn {
+		return
+	}
+
+	if turn {
+		if loc[0] == 7 {
+			Board[loc[0]][loc[1]].Piece = Queen{}
+		}
+	} else {
+		if loc[0] == 0 {
+			Board[loc[0]][loc[1]].Piece = Queen{}
+		}
+	}
 }

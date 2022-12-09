@@ -1,16 +1,16 @@
 package main
 
-type piece struct {
-	color bool
-	piece interface{}
+type Piece struct {
+	Color bool
+	Piece interface{}
 }
 
-type pawn struct{}
-type rook struct{}
-type knight struct{}
-type bishop struct{}
-type queen struct{}
-type king struct{}
+type Pawn struct{}
+type Rook struct{}
+type Knight struct{}
+type Bishop struct{}
+type Queen struct{}
+type King struct{}
 
 type webReq struct {
 	Board    [][]string

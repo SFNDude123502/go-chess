@@ -1,18 +1,21 @@
 package main
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/gorilla/websocket"
+	"sync"
+)
 
-var board [][]*piece
-var pass int = 0
-var turn bool = true
-var defPawn = pawn{}
-var defKing = king{}
-var e string
-var messages []string = []string{}
-var checked bool = false
-var clients = make(map[*websocket.Conn]bool)
-var err error
-var locHash map[string]([]int) = map[string]([]int){
+var Board [][]*Piece
+var Pass int = 0
+var Turn bool = true
+var DefPawn = Pawn{}
+var DefKing = King{}
+var E string
+var Checked bool = false
+var Clients = make(map[*websocket.Conn]bool)
+var Err error
+var Wg *sync.WaitGroup
+var LocHash map[string]([]int) = map[string]([]int){
 	"a1": {0, 0}, "b1": {0, 1}, "c1": {0, 2}, "d1": {0, 3}, "e1": {0, 4}, "f1": {0, 5}, "g1": {0, 6}, "h1": {0, 7},
 	"a2": {1, 0}, "b2": {1, 1}, "c2": {1, 2}, "d2": {1, 3}, "e2": {1, 4}, "f2": {1, 5}, "g2": {1, 6}, "h2": {1, 7},
 	"a3": {2, 0}, "b3": {2, 1}, "c3": {2, 2}, "d3": {2, 3}, "e3": {2, 4}, "f3": {2, 5}, "g3": {2, 6}, "h3": {2, 7},
@@ -22,11 +25,11 @@ var locHash map[string]([]int) = map[string]([]int){
 	"a7": {6, 0}, "b7": {6, 1}, "c7": {6, 2}, "d7": {6, 3}, "e7": {6, 4}, "f7": {6, 5}, "g7": {6, 6}, "h7": {6, 7},
 	"a8": {7, 0}, "b8": {7, 1}, "c8": {7, 2}, "d8": {7, 3}, "e8": {7, 4}, "f8": {7, 5}, "g8": {7, 6}, "h8": {7, 7},
 }
-var pieceHash map[interface{}]string = map[interface{}]string{
-	pawn{}:   "P",
-	rook{}:   "R",
-	knight{}: "N",
-	bishop{}: "B",
-	king{}:   "K",
-	queen{}:  "Q",
+var PieceHash map[interface{}]string = map[interface{}]string{
+	Pawn{}:   "P",
+	Rook{}:   "R",
+	Knight{}: "N",
+	Bishop{}: "B",
+	King{}:   "K",
+	Queen{}:  "Q",
 }
